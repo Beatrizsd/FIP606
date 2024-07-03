@@ -51,6 +51,9 @@ website:
              text: Correlação
            - href: EC50.qmd
              text: EC50
+      
+      - text: Mapa
+        href: MAPAS.qmd    
              
     
       

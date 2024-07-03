@@ -1,7 +1,5 @@
 rnaturalearth
 remotes
-r4pde
-ggthemes
 tidyverse
 ggplot2
 tibble
@@ -12,10 +10,11 @@ dplyr
 stringr
 forcats
 lubridate
+r4pde
+ggthemes
 ggspatial
 plotly
 leaflet
 ggrepel
 scatterpie
-rnaturalearthhires
 gsheet
