@@ -1,0 +1,225 @@
+---
+title: ""
+---
+
+---
+A analise descritiva dos dados é feita na fase inicial de um estudo, com objetivo de resumir, sumarizar e conhecer o comportamento dos dados.
+
+Análise exploratória das sabatinas da turma
+
+### Pacotes usados
+
+```{r}
+library(gsheet)
+library(tidyverse)
+library(ggthemes)
+library(dplyr)
+library(patchwork)
+
+
+
+```
+
+### Importar dados 
+
+```{r}
+notas <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1092065531")
+
+
+```
+
+### separar notas da sabatina 1 e sabatina 2
+
+```{r}
+notas1 <- notas %>% 
+  select(prova, nota) %>% 
+  filter(prova == "1")
+notas1
+
+notas2 <- notas %>% 
+  select(prova, nota) %>% 
+  filter(prova == "2")
+notas2
+
+```
+
+### Calcular médias das sabatinas
+
+```{r}
+media1 <- mean(notas1$nota)
+media2 <- mean(notas2$nota)
+```
+
+### Gráfico de Histograma
+
+Quando comparamos as notas da prova 1 em relação prova 2, a maioria dos alunos obtiveram notas superiores a 90 na prova 1. Porém a média das duas provas, de maneira geral, foram próximas
+
+```{r}
+# gráfico das notas da prova 1
+plot1 <- notas1 %>% 
+  ggplot(aes(x = nota)) +
+  geom_histogram(bins = 5, fill = "darkmagenta", color = "black") +
+  labs(y = "Frequência",
+       x = "Nota", title = "Prova 1") +
+  geom_vline(xintercept = media1 , color = "black", linetype = "dashed") +
+   annotate(geom = "text", 
+            x= 66,
+            y = 7.5,
+            label = "Média: 79.55") + ylim(0,10) +
+  theme_few() 
+
+plot1
+
+#gráfico das notas da prova 2
+plot2 <- notas2 %>% 
+    ggplot(aes(x = nota)) +
+  geom_histogram(bins = 5, fill = "steelblue", color = "black") +
+  labs(y = "Frequência",
+       x = "Nota", title = "Prova 2") +
+  geom_vline(xintercept = media1 , color = "black", linetype = "dashed") +
+   annotate(geom = "text", 
+            x= 66.5,
+            y = 7.5,
+            label = "Média: 79.26") +  ylim(0,10) + 
+  theme_few()
+
+plot2
+
+#O pacote pactwork foi usado para colocar um gráfico ao lado do outro
+(plot1|plot2)
+
+# Para inserir a linha verical de interceptação da média foi usada a função
+#geom_vline(xintercept = media1 , color = "black", linetype = "dashed") + annotate(geom = "text", x= 75, y = 7.5, label = "Média")
+
+
+
+
+```
+
+### Gráfico de Barra de erro
+
+```{r}
+
+notas_resumo <- notas %>% 
+  group_by(prova) %>% 
+  summarise(media = mean(nota), sd = sd(nota))
+
+notas_resumo %>% 
+  ggplot(aes(x = as.factor(prova), y = media)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = media - sd, ymax = media + sd), width = 0.1) +
+  theme_few() + ylim(0,100)+
+  labs( x = "Provas",
+        y = "Nota")
+
+
+
+
+```
+
+### Gráfico Boxplot
+
+```{r}
+notas %>% 
+  ggplot(aes(x = as.factor(prova), 
+             y = nota)) +
+  geom_errorbar(stat = "boxplot", width = 0.1, size = 1) + #o limite da barra de erros que segue o padrão do boxplot
+  geom_boxplot(width = 0.5) + #width- mexe na largura da caixa
+  geom_point(stat = "summary", fun = "mean", size = 2, color = "red") + #a média é representada por um "X", onde eu utlizei o resumo do meus dados, utilizando a função média. 
+  labs (x = "Prova",
+        y = "Notas")+
+  geom_jitter(alpha = 0.6, height = 0, width = 0.25, color = "black", size = 1.5) + #alpha - transparencia dos meus pontos
+  theme_few() + ylim(0,100)
+```
+
+# Analise descritiva
+
+### Pacotes usados
+
+```{r}
+library(gsheet)
+library(tidyverse)
+library(Hmisc)
+library(pastecs)
+library(psych)
+library(summarytools)
+library(janitor)
+```
+
+#### Importar dados
+
+```{r}
+magnesio <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=983033137")
+
+milho <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1345524759")
+
+survey <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1118819738")
+
+```
+
+## Medidas de tendência central
+
+° Média (descreve a tendência central dos dados, seja da população ou amostra)
+
+° Mediana (observação no meio de uma série crescente de dados
+
+° Moda (valor mais frequente)
+
+### Com R base
+
+### Media
+
+```{r}
+magnesio$comp
+
+media_comp <- mean(magnesio$comp)
+media_comp
+```
+
+### Mediana
+
+```{r}
+mediana_comp <- median(magnesio$comp)
+mediana_comp
+```
+
+### valor Máximo e mínino
+
+```{r}
+min(magnesio$comp)
+max(magnesio$comp)
+```
+
+## Medidas de variabilidade
+
+### variância
+
+```{r}
+var_comp <- var(magnesio$comp)
+var_comp
+```
+
+### Desvio padrão
+
+```{r}
+sd_comp <- sd(magnesio$comp)
+sd_comp
+```
+
+### No tidyverse
+
+```{r}
+mg <- magnesio |> 
+  group_by(trat) |> 
+  summarise(mean_comp = mean(comp),
+            var_comp = var(comp),
+            sd_comp = sd(comp),
+            n = n())
+
+mg |> 
+  ggplot(aes(trat, mean_comp))+
+  geom_point()+
+  geom_errorbar(aes(min = mean_comp - sd_comp,
+                    max = mean_comp + sd_comp),
+                width = 0.05)
+```

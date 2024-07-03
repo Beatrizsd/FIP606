@@ -1,0 +1,3 @@
+"0","campo |> "
+"0","  ggplot(aes(FER, PROD))+"
+"0","  geom_point()"

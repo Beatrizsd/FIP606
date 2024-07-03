@@ -1,0 +1,9 @@
+---
+title: ""
+---
+
+1- Instalar o R
+
+2- Instalar Rstudio
+
+Link para instalar o [R e R studio](https://posit.co/download/rstudio-desktop/)

@@ -1,0 +1,5 @@
+"0","li |> "
+"0","  ggplot(aes(factor(dose), severity, color = factor(dose)))+"
+"0","  geom_jitter(width = 0.1)+"
+"0","  facet_wrap(~ treat)"
+"0",""

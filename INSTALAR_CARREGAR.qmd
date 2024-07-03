@@ -1,0 +1,70 @@
+---
+title: ""
+---
+
+## **Pacotes**
+
+Algumas funções são nativas do R, não precisa instalar nenum pacote para ser usada. Porém, algumas funções são provinientes de pacotes específicos que precisam ser instalados para serem usadas. A maioria dos pacotes são disponibilizados através do CRAN (Comprehensive R Archieve Network), que é o repositório oficial do R. Alguns pacotes podem ser instalados através do GitHub.
+
+### Como instalar pacotes do CRAN
+
+Para instalar pacotes, segue o comando menu: tools - install packages, vai abrir uma aba e digita o nome do pacote na opção packages. Ou através do comando "install.packages("nome_do_pacote")". Após a instalação do pacote, para usar suas funções, é necessário carregar o parote com a função library(nome do pacote)
+
+```{r}
+#install.packages("tidyverse")
+```
+
+### Como instalar pacotes do GitHub
+
+```{r}
+#install_github("emdelponte/r4pde")
+```
+
+### **Carregar pacote**
+
+Após a instalação do pacote, para usar suas funções, é necessário carregar o parote com a função library(nome do pacote)
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+## **Explorando funções do dplyr**
+
+O pacote dplyr carrega automaticamente com o tidyverse. O dplyr possue funções essenciais para explorae os dados, como selec seceliona colunas específicas, filter (filtra linhas),count e etc.
+
+```{r}
+library(readxl)
+library(tidyverse)
+magnesio <- read_excel("dados-diversos.xlsx")
+
+#dentro do conjunto magnesio, selecionar a coluna trat e filtrar dentro de trat o tratamento control
+magnesio |>
+  select(trat) |> 
+  filter(trat == "control")
+
+#demtro do conjunto magnesio, filtrar somente comp menor que 15
+magnesio |> 
+  filter(comp < 15)
+
+#selecionar duas colunas
+magnesio |> 
+  select(rep, comp) |> 
+  filter(comp < 15)
+
+survey <- read_excel("dados-diversos.xlsx", sheet = 11)
+
+# função count para contar
+survey |> 
+  count(species)
+
+#como agrupar
+survey |> 
+  group_by(residue) |>
+  tally()
+  
+#Criar uma variável nova com mutate
+#criar uma variável extra (log_comp) que é igual ao logaritimo do comprimento
+
+magnesio |> 
+  mutate(log_comp = log(comp))
+```

@@ -1,0 +1,50 @@
+---
+title: ""
+---
+
+## **Box plot**
+
+O box plot é usado para visualizar a distribuição de dados por meio de um diagrama que inclui: mediana, quartis (primeiro, segundo e terceiro), outliers, limite máximo e limite mínimo.
+
+### Pacotes usados
+
+```{r}
+library(readxl)
+library(tidyverse)
+```
+
+### Importar dados
+```{r}
+magnesio <- read_excel("dados-diversos.xlsx")
+
+
+cr <- read_csv("https://raw.githubusercontent.com/emdelponte/paper-coffee-rust-Ethiopia/master/data/survey_clean.csv")
+```
+
+### Visualizar dadados em boxplot
+```{r}
+magnesio |> 
+  ggplot(aes(trat, comp))+
+  geom_boxplot(outlier.colour = NA, fill = "darkgray")+
+  geom_jitter(width = 0.1, color = "red")+
+  labs(y = "comprimento", x = "")+
+  ylim(5,20)+
+  theme_bw()
+```
+
+
+Como retirar os outlier
+```{r}
+#Para retirar autilier é usada a funçãi outlier = NA dentro do geom_boxplot
+cr |> 
+  ggplot(aes(cultivar, sev2))+
+  geom_boxplot(outlier.colour = NA)+
+  facet_wrap(~ region)
+```
+
+```{r}
+cr |> 
+  ggplot(aes(cultivar, sev2))+
+  geom_boxplot(outlier.colour = NA)+
+  facet_wrap(~ region ~zone)
+```

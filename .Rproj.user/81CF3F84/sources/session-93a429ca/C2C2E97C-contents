@@ -1,0 +1,142 @@
+---
+title: ""
+---
+
+# Transformação de dados
+
+A transformação é necessária quando os dados não atendem a premissas de normalidade dos resíduos e homogeneidade de variâncias
+
+```{r}
+# vamos usar o conjunto de dados do R "InsectSpray"
+library(tidyverse)
+inseticida <- InsectSprays
+```
+
+### visualizar
+
+```{r}
+inseticida |>
+  ggplot(aes(spray,count))+
+  geom_boxplot()
+```
+
+### Ajustar anova e trabalhar com os resíduos
+
+```{r}
+m1 <- lm(count ~spray, data = inseticida)
+summary(m1)
+anova(m1)
+```
+
+### Checar as premissas de normalidade e heterogeneidade
+
+```{r}
+library(performance)
+check_normality(m1)
+check_heteroskedasticity(m1)
+
+hist(m1$residuals)
+
+```
+
+O conjunto de dados não atendeu as premissas de normalidade e heterogeneidade, agora seguiremos com a transformação
+
+## Transformaação raíz quadrada
+
+Para transformar os dados em raiz quadrada, usamos a função mutate e sqrt.
+
+```{r}
+inseticida <- inseticida %>% 
+  mutate(count2 = sqrt(count))
+
+inseticida |> 
+  ggplot(aes(spray, count2)) +
+  geom_boxplot()
+
+m1 <- lm(count2 ~ spray,
+         data = inseticida)
+
+anova(m1)
+```
+
+#### checar as premissas depois da transformação
+
+```{r}
+library(performance)
+check_normality(m1)
+check_heteroscedasticity(m1)
+
+library(DHARMa)
+plot(simulateResiduals(m1))
+
+hist(m1$residuals)
+```
+
+#### Teste de comparação de médias
+
+```{r}
+library(emmeans)
+m1_medias <- emmeans(m1, ~spray)
+plot(m1_medias)
+
+library(multcomp)
+cld(m1_medias)
+```
+
+## Transformação logaritmica
+
+```{r}
+m2 <- lm(count2 ~ spray,
+         data = inseticida)
+anova(m2)
+```
+
+checar se as premissas foram atendidas depois da transformação (normalidade e heterogeneidade)
+
+```{r}
+library(performance)
+check_normality(m2)
+check_heteroscedasticity(m2)
+
+hist(m2$residuals)
+```
+
+A transformação logaritmica foi atendida para os pressupostos
+
+## Teste não paramétrico
+
+Usando kruskal.test
+
+```{r}
+library(agricolae)
+kruskal.test(count ~ spray,
+             data = inseticida)
+#rejeitou a hipotese nula
+
+m3 <- kruskal(inseticida$count,
+        inseticida$spray,
+        group = TRUE)
+m3
+```
+
+## Transformação GLMs (modelo linear generalizado)
+
+```{r}
+m4 <- glm(count ~ spray,
+          family = poisson, 
+          data = inseticida)
+summary(m4)
+anova(m4)
+
+library(car)
+Anova(m4) #a função Anova com letra maiúscula
+
+#pressupostos
+plot(simulateResiduals(m4))
+
+m4_medias <- emmeans(m4, ~ spray,
+                     type = "response")
+m4_medias
+cld(m4_medias)
+
+```

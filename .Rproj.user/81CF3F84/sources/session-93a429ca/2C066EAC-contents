@@ -1,0 +1,99 @@
+---
+title: "aula5"
+author: "BEATRIZ"
+date: "2024-04-03"
+output: html_document
+---
+**Pacotes usados**
+
+```{r}
+library(gsheet)
+library(dplyr)
+library(tidyverse)
+library(ggthemes)
+```
+
+
+**Importar os dados xlsx**
+
+```{r}
+notas <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1092065531")
+
+notas1 <- notas |> 
+  select(prova, nota) |> 
+  filter(prova == "1")
+notas1
+
+notas2 <- notas |> 
+  select(prova, nota) |> 
+  filter(prova =="Prova 2")
+notas2
+
+media1 <- mean(notas1$nota)
+media2 <- mean(notas2$nota)
+
+
+
+notas |> 
+  ggplot(aes(x = nota, fill = as.factor(prova)))+
+  geom_histogram(bins = 5, fill = "steelblue", color = "white")+
+  facet_wrap(~prova)+
+  labs(y = "Frequência",
+       x = "Nota", legend = NULL)+
+  geom_vline(xintercept = media1, color = "black", linetype = "dashed")+
+  annotate(geom = "text",
+           x= 75,
+           y = 9,
+           label = "Média")+
+  scale_y_continuous(breaks = seq(0,10,1), limits = c(0,10))+
+  theme_few()+
+  scale_fill_manual(values = c("darkred", "steelblue"))
+
+
+
+
+```
+
+
+
+```{r}
+library(dplyr)
+
+notas %>%
+  ggplot(aes(x = nota, fill = as.factor(prova))) +
+  geom_histogram(bins = 5, color = "black", show.legend = FALSE) +
+  facet_wrap(~prova) +
+  labs(y = "Frequência",
+       x = "Nota", fill = "", color = "", legend = NULL) +
+  geom_vline(aes(xintercept = ifelse(prova == "Prova 1", media1, media2)), color = "black", linetype = "dashed") +
+  geom_text(data = filter(notas, prova == "Prova 1"), aes(x = media1, y = 7.5, label = "Média 79.55"), vjust = -1, hjust = 1, color = "black") +
+  geom_text(data = filter(notas, prova == "Prova 2"), aes(x = media2, y = 7.5, label = "Média 79.26"), vjust = -1, hjust = 1, color = "black") +
+  scale_y_continuous(breaks = seq(0, 10, 1), limits = c(0, 10)) +
+  theme_few() +
+  scale_fill_manual(values = c("darkred", "steelblue"))
+```
+
+
+
+
+
+```{r}
+notas$prova <- factor(notas$prova, labels = c("1° Prova", "2° Prova"))
+
+plot1 <- ggplot(data = notas, aes(x = notas, fill = as.factor(prova)))+
+  geom_histogram(binwidth = 10, alpha = 0.7, width = 2)
+  
+```
+
+
+```{r}
+df1 |>
+  group_by(prova) |> 
+  summarise(mean_nota = mean(nota))
+           
+
+df1 |> 
+  ggplot(aes(x= nota))+
+  geom_histogram(bins = 6)
+```
+

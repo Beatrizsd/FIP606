@@ -1,0 +1,14 @@
+{
+  "hash": "41d33b1ac181f9011bd0b260c454e58b",
+  "result": {
+    "markdown": "---\ntitle: \"bfbf\"\n---\n\n### Pacotes\n\n::: {.cell hash='HISTOGRAMA_cache/html/unnamed-chunk-1_385c4b804815c4ba8708e236f42de576'}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n:::\n\n\n**Histogramas**\n\nO histograma é usado para visualizar a distribuição de uma variável numérica. Para isso, usaremos a função geom_histogram\n\n### Importar dados\n\n\n::: {.cell hash='HISTOGRAMA_cache/html/unnamed-chunk-2_b20637e33b04bac29cb7f757779f97fe'}\n\n```{.r .cell-code}\ncr <- read_csv(\"https://raw.githubusercontent.com/emdelponte/paper-coffee-rust-Ethiopia/master/data/survey_clean.csv\")\n```\n:::\n\n\nAqui observaremos um histograma da severidade por cultivar\n\n\n::: {.cell hash='HISTOGRAMA_cache/html/unnamed-chunk-3_875653448e08afd5bb9cc81d421de4fe'}\n\n```{.r .cell-code}\ncr |> \n  ggplot(aes(x = sev2))+\n  geom_histogram(bins = 10,\n                 color = \"black\",\n                 fill = \"darkorange\")+\n  facet_wrap(~ cultivar)\n```\n\n::: {.cell-output-display}\n![](HISTOGRAMA_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n\n\nHistograma da incidência\n\n\n::: {.cell hash='HISTOGRAMA_cache/html/unnamed-chunk-4_0c3fb08badaac1b58a8832429d56a600'}\n\n```{.r .cell-code}\ncr |> \n  ggplot(aes(x = inc))+\n  geom_histogram(bins = 15,\n                 color  = \"black\",\n                 fill = \"darkorange\")+\n  geom_rug()+\n  geom_vline(aes(xintercept = 34.89),\n             linetype = \"dashed\")+\n  annotate(geom = \"text\",\n           x = 46,\n           y = 62,\n           label = \"Meam = 34.8\")\n```\n\n::: {.cell-output-display}\n![](HISTOGRAMA_files/figure-html/unnamed-chunk-4-1.png){width=672}\n:::\n\n```{.r .cell-code}\n# a função geom_vline foi usada para a média da dristribuição\n\n# a função geon_rug é util para para oferecer uma visão adicional da densidade dos dados \n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

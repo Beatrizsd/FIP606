@@ -1,0 +1,53 @@
+---
+title: ""
+---
+
+# **Importar dados**
+
+### Pacotes usados
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(readxl) # importa de planilha excel
+library(tidyverse) # importa arquivo csv
+library(gsheet) # importa arquivo de planilha google
+
+```
+
+## 1 - De planilha excel
+
+Na rotina acadêmica é muito comum preencher os dados em planilhas do Excel, então, nesta etapa vamos aprender como importar dados externos para dentro do R.
+
+Para isso, usaremos o pacote "readxl" que contem a função "read_excel"
+
+```{r}
+magnesio <- read_excel("dados-diversos.xlsx")
+magnesio
+```
+
+Uma planilha Excel, pode ter várias abas, suponha que os dados que deseja importar esteja na aba que foi nomeada como "micelial",.
+
+```{r}
+micelial <- read_excel("dados-diversos.xlsx", sheet = "micelial")
+micelial
+
+# o mesmo raciocinio serve para importar tabela atraves no número da sua localização na planilha.
+micelial <- read_excel("dados-diversos.xlsx", sheet =  3)
+```
+
+## 2 - Arquivo csv
+
+Usaremos o pacote "tidyverse" que carrega o readr, onde contem a função "read_csv"
+
+```{r}
+dados <- read_csv("dados-diversos.csv")
+dados
+```
+
+## 3 - Planilha google
+
+Usaremos o pacote "gsheet" e a função "gsheet2tbl"
+
+```{r}
+dadosgoogle <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit?gid=866852711#gid=866852711")
+dadosgoogle
+```

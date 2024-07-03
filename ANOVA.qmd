@@ -1,0 +1,99 @@
+---
+title: ""
+---
+
+# Análise de variância (ANOVA)
+
+A ANOVA é um método estatístico usado para testar as diferenças entre dois ou mais grupos, usando o teste F.
+
+### Pacotes Usados
+```{r}
+library(gsheet)
+library(tidyverse)
+library(performance)
+library(DHARMa)
+library(emmeans)
+```
+
+
+*Importação dos dados*
+
+```{r}
+micelial <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=959387827")
+```
+
+*Visualização dos dados*
+
+```{r}
+micelial |> 
+  ggplot(aes(especie, tcm))+
+  geom_boxplot()+
+  geom_jitter(width = 0.05)
+  
+```
+
+## ANOVA usando modelo lm
+
+```{r}
+m1 <- lm(tcm ~ especie, data = micelial)
+anova(m1)
+# rejeita a hipotese nula de que as médias são iguais, pelo menos um grupo difere dos demais grupos.
+```
+
+### Verificar se as premissas são atendidas
+
+Para verificar as premissas do teste, vamos usar o pacote performance e o pacote DHARMa
+
+### Normalidade dos resíduos
+
+```{r}
+check_normality(m1)
+#normalidade ok
+```
+
+Normalidade visual
+
+```{r}
+hist(m1$residuals)
+
+qqnorm(m1$residuals)
+qqline(m1$residuals)
+```
+
+### homogeneidade das variâncias
+
+```{r}
+check_heteroscedasticity(m1)
+```
+
+Usando o pacote DHARMa da para checar a normalidade e homocedasticidade de maneira mais pratica
+
+```{r}
+plot(simulateResiduals(m1))
+```
+
+### comparação de médias
+
+Para comparar as médias dos grupos usaremos o pacote emmeans e multcomp
+
+```{r}
+
+means_m1 <- emmeans(m1, ~ especie)
+means_m1
+
+means_m1df <- data.frame(means_m1)
+
+means_m1df |> 
+  ggplot(aes(especie, emmean))+
+  geom_point()+
+  geom_errorbar(aes(min = lower.CL,
+                    max = upper.CL),
+                width = 0.1)
+
+pwpm(means_m1) #tukey
+
+library(multcomp)
+cld(means_m1)
+
+
+```

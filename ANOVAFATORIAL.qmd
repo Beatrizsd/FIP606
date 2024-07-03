@@ -1,0 +1,65 @@
+---
+title: ""
+---
+
+
+## ANOVA arranjo fatorial
+
+### pacote usados
+```{r}
+library(gsheet)
+library(tidyverse)
+library(DHARMa)
+library(emmeans)
+library(multcompView)
+library(multcomp)
+```
+
+### Importar dados
+
+```{r}
+li <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=2023059672")
+```
+
+### visualizar
+
+```{r}
+li |> 
+  ggplot(aes(factor(dose), severity, color = factor(dose)))+
+  geom_jitter(width = 0.1)+
+  facet_wrap(~ treat)
+
+```
+
+### modelo anova fatorial
+
+```{r}
+m1 <- lm(severity ~ treat*factor(dose),
+         data = li)
+summary(m1)
+```
+
+### Checar as premissas
+
+```{r}
+plot(simulateResiduals(m1))
+
+```
+
+### Estimando a média dos tratamentos
+para comparar as colunas (fungicida)
+```{r}
+
+means_m1 <- emmeans(m1, ~ treat | dose)
+means_m1
+cld(means_m1)
+
+```
+
+para comparar as linhas (doses)
+```{r}
+means_m2 <- emmeans(m1, ~ dose | treat)
+means_m2
+cld(means_m2)
+```
+

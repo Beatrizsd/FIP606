@@ -1,0 +1,16 @@
+"0","teste1 <- t.test(Mg2, control,"
+"0","       var.equal = TRUE)"
+"0","report(teste1)"
+"1","Effect sizes were labelled following
+Cohen's (1988) recommendations.
+
+The Two Sample t-test testing the
+difference between Mg2 and control
+(mean of x = 10.52, mean of y =
+15.68) suggests that the effect is
+negative, statistically significant,
+and large (difference = -5.16, 95% CI
+[-6.49, -3.83], t(18) = -8.15, p <
+.001; Cohen's d = -3.65, 95% CI
+[-5.10, -2.16])
+"

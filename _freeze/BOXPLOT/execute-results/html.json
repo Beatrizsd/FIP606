@@ -1,0 +1,14 @@
+{
+  "hash": "4b0f033b3af63b936923d22bead34133",
+  "result": {
+    "markdown": "---\ntitle: \"\"\n---\n\n\n## **Box plot**\n\nO box plot é usado para visualizar a distribuição de dados por meio de um diagrama que inclui: mediana, quartis (primeiro, segundo e terceiro), outliers, limite máximo e limite mínimo.\n\n### Pacotes usados\n\n\n::: {.cell hash='BOXPLOT_cache/html/unnamed-chunk-1_055df160887b6f6b2b9ec357d966827e'}\n\n```{.r .cell-code}\nlibrary(readxl)\nlibrary(tidyverse)\n```\n:::\n\n\n### Importar dados\n\n::: {.cell hash='BOXPLOT_cache/html/unnamed-chunk-2_eeb0575ab7ab5536e168249ba993a6ae'}\n\n```{.r .cell-code}\nmagnesio <- read_excel(\"dados-diversos.xlsx\")\n\n\ncr <- read_csv(\"https://raw.githubusercontent.com/emdelponte/paper-coffee-rust-Ethiopia/master/data/survey_clean.csv\")\n```\n:::\n\n\n### Visualizar dadados em boxplot\n\n::: {.cell hash='BOXPLOT_cache/html/unnamed-chunk-3_4c4de06a507d1e531561026af1808b7d'}\n\n```{.r .cell-code}\nmagnesio |> \n  ggplot(aes(trat, comp))+\n  geom_boxplot(outlier.colour = NA, fill = \"darkgray\")+\n  geom_jitter(width = 0.1, color = \"red\")+\n  labs(y = \"comprimento\", x = \"\")+\n  ylim(5,20)+\n  theme_bw()\n```\n\n::: {.cell-output-display}\n![](BOXPLOT_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n\n\n\nComo retirar os outlier\n\n::: {.cell hash='BOXPLOT_cache/html/unnamed-chunk-4_4f0fd6d1d3bd8a08184b9e39c195a10f'}\n\n```{.r .cell-code}\n#Para retirar autilier é usada a funçãi outlier = NA dentro do geom_boxplot\ncr |> \n  ggplot(aes(cultivar, sev2))+\n  geom_boxplot(outlier.colour = NA)+\n  facet_wrap(~ region)\n```\n\n::: {.cell-output-display}\n![](BOXPLOT_files/figure-html/unnamed-chunk-4-1.png){width=672}\n:::\n:::\n\n::: {.cell hash='BOXPLOT_cache/html/unnamed-chunk-5_25d70a841adb0e03b86c68b15a2a852b'}\n\n```{.r .cell-code}\ncr |> \n  ggplot(aes(cultivar, sev2))+\n  geom_boxplot(outlier.colour = NA)+\n  facet_wrap(~ region ~zone)\n```\n\n::: {.cell-output-display}\n![](BOXPLOT_files/figure-html/unnamed-chunk-5-1.png){width=672}\n:::\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

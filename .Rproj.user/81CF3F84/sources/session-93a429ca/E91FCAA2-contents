@@ -1,0 +1,242 @@
+---
+title: "vdvd"
+---
+
+
+## Regressão
+
+### Pacotes usados
+```{r}
+library(gsheet)
+library(tidyverse)
+library(AgroR)
+library(r4pde)
+library(broom)
+library(patchwork)
+```
+
+### Importar dados
+
+```{r}
+estande <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=401662555")
+```
+
+### Visualizar
+
+```{r}
+estande |>
+  ggplot(aes(trat, nplants))+
+  geom_jitter(width = 0.1, color = "darkgrey")+
+  facet_wrap(~ exp)+
+  stat_summary(fun.data = "mean_cl_boot", size = 0.5, color = "darkblue")+
+  geom_smooth(method = "lm", se = T)
+```
+
+### regressão experimento 1
+
+```{r}
+exp1 <- estande |> 
+  filter(exp == 1)
+
+exp1 |> 
+  ggplot(aes(trat, nplants))+
+  geom_point()+
+  ylim(0,100)+
+  geom_smooth(se = F)
+
+#modelo linear
+lm1<- lm(nplants ~ trat, data = exp1)
+summary(lm1)
+anova(lm1)
+```
+
+Experimento 2
+
+```{r}
+exp2 <- estande |> 
+  filter(exp == 2)
+
+exp2 |> 
+  ggplot(aes(trat, nplants))+
+  geom_point()+
+  ylim(0,100)+
+  geom_smooth(se = F, method = "lm")
+
+
+#modelo linear
+lm2<- lm(nplants ~ trat, data = exp2)
+summary(lm2)
+anova(lm2)
+```
+
+Experimento 3
+
+```{r}
+exp3 <- estande |> 
+  filter(exp == 3)
+
+exp3 |> 
+  ggplot(aes(trat, nplants))+
+  geom_point()+
+  ylim(0,100)+
+  geom_smooth(se = F, method = "lm")
+
+#modelo linear
+lm3<- lm(nplants ~ trat, data = exp3)
+summary(lm3)
+
+anova(lm3)
+hist(residuals(lm3))
+```
+
+### Comparação de modelos GLM com Galssian e Poisson
+
+quanto menor o AIC melhor
+
+```{r}
+glm1 <- glm(nplants ~ trat, family = "gaussian", data =  exp1)
+glm1
+
+summary(glm1)
+AIC(glm1)
+
+glm1b <- glm(nplants ~trat, family = poisson(link = "log"), data = exp1)
+summary(glm1b)
+AIC(glm1b)
+```
+
+Experimento 2
+
+```{r}
+glm2 <- glm(nplants ~ trat, family = "gaussian", data =  exp2)
+glm2
+AIC(glm2)
+
+glm2b <- glm(nplants ~trat, family = poisson(link = "log"), data = exp2)
+summary(glm2b) 
+AIC(glm2b)
+```
+
+Experimento 3
+
+```{r}
+glm3 <- glm(nplants ~ trat, family = "gaussian", data = exp3)
+summary(glm3)
+AIC(glm3)
+
+glm3b <- glm(nplants ~ trat, family = "poisson" (link = log), data = exp3)
+summary(glm3b)
+AIC(glm3b)
+```
+
+### ajuste de modelo linear e quadrático
+
+```{r}
+exp2 <- estande |> 
+  filter(exp == 2)
+
+#modelo quadratico
+exp2 |> 
+  ggplot(aes(trat, nplants))+
+  geom_point()+
+  ylim(0,100)+
+  geom_smooth(se = F,
+              method = "lm",
+              formula = y ~ poly(x,2))+
+  geom_smooth( method = "lm",
+               se = F, 
+               color = "black")
+
+
+
+#modelo linear
+lm2<- lm(nplants ~ trat, 
+         data = exp2)
+summary(lm2)
+anova(lm2)
+```
+
+```{r}
+exp2$trat2 <- exp2$trat^2
+
+#primeira ordem
+exp2$trat2 <- exp2$trat^2
+
+
+# segunda ordem ou quadratico
+lm3<- lm(nplants ~trat + trat2,
+         data = exp2)
+summary(lm3)
+#o r2 aumentou, explicando MELHOR. 50% DA VARIAÇÃO
+AIC(lm2)
+AIC(lm3)
+#o modelo quadratico explica melhor
+
+#a equação olha no summary
+#y=66,3 - 1,77*TRAT+0,02*TRAT^2
+
+library(AgroR)
+#linear
+with(exp2, polynomial(trat, nplants, grau = 1))
+
+#quadratico (explicou melhor)
+with(exp2, polynomial(trat, nplants, grau = 2))
+# cubica
+# normalmente não utiliza
+with(exp2, polynomial(trat, nplants, grau = 3))
+```
+
+
+```{r}
+wm <- WhiteMoldSoybean
+wm |>
+  ggplot(aes(inc, yld))+
+  geom_point()+
+  facet_wrap(~ study)
+
+
+
+ wm |> 
+  ggplot(aes(inc, yld, group = factor(study)))+
+  geom_point()+
+  #facet_wrap(~ study)+
+  geom_smooth(method = "lm", se = F)
+  theme_minimal()
+
+  #primeiro  
+mofo1 <- lm(yld ~ inc, data = wm)
+summary(mofo1)
+#quanto de produtividade ta perdendo pra cada percentual? -9.261 kg
+```
+
+```{r}
+#segundo
+mofo2 <- wm |> 
+  group_by(study) |> 
+  do (tidy(lm(.$yld ~ .$inc), conf.int = TRUE))
+mofo2
+
+
+p3 <- mofo2 |> 
+  filter(term == "(Intercept)") |> 
+  ggplot(aes(x = estimate))+
+  geom_histogram(bins = 8, color = "white", fill = "gray50")+
+  theme_r4pde()+
+  labs(x = "Intercept", y = "Frequency")
+
+p4 <- mofo2 |> 
+  filter(term == ".$inc") |> 
+  ggplot(aes(x = estimate))+
+  geom_histogram(bins = 8, color = "white", fill = "gray50")+
+  theme_r4pde()+
+  labs(x = "Slope", y = "Frequency")
+
+
+
+p3|p4
+
+
+df <- mofo2 %>% 
+  filter(term == ".$inc")
+mean(df$estimate)
+```

@@ -1,0 +1,3 @@
+"0",""
+"0","cor_imagem2 <- cor(imagem2)"
+"0","corrplot(cor_imagem2, method = 'number', type = ""lower"")"

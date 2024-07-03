@@ -1,0 +1,35 @@
+"0","library(rnaturalearth)"
+"0","library(remotes)"
+"0","library(r4pde)"
+"0","library(ggthemes)"
+"0","library(tidyverse)"
+"0","library(ggspatial)"
+"0","library(plotly)"
+"2","
+Attaching package: ‘plotly’
+
+"
+"2","The following object is masked from ‘package:MASS’:
+
+    select
+
+"
+"2","The following object is masked from ‘package:ggplot2’:
+
+    last_plot
+
+"
+"2","The following object is masked from ‘package:stats’:
+
+    filter
+
+"
+"2","The following object is masked from ‘package:graphics’:
+
+    layout
+
+"
+"0","library(leaflet)"
+"0","library(ggrepel)"
+"0","library(scatterpie)"
+"0","library(rnaturalearthhires)"

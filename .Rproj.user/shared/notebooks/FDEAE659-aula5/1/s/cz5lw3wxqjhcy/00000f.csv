@@ -1,0 +1,5 @@
+"0","notas$prova <- factor(notas$prova, labels = c(""1° Prova"", ""2° Prova""))"
+"0",""
+"0","plot1 <- ggplot(data = notas, aes(x = notas, fill = as.factor(prova)))+"
+"0","  geom_histogram(binwidth = 10, alpha = 0.7, width = 2)"
+"0","  "

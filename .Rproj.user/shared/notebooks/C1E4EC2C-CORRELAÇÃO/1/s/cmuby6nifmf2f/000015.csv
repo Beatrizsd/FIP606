@@ -1,0 +1,5 @@
+"0",""
+"0","imagem |> "
+"0","ggplot(aes(Assess, LeafDoctor))+"
+"0","  geom_point()+"
+"0","  geom_smooth(method = ""ln"")"

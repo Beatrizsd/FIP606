@@ -1,0 +1,205 @@
+---
+title: ""
+---
+
+## Teste T
+
+O teste T é um teste estatístico que compara e avalia se há diferença estatística entre médias de dois grupos
+
+## Duas amostras independentes
+
+### Pacotes usados
+```{r}
+library(gsheet)
+library(dplyr)
+library(tidyverse)
+library(report)
+```
+
+```{r}
+magnesio <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=983033137")
+```
+
+## Analise descritiva
+
+Primeiro vamos observar a estatística descritiva do conjunto dados.
+
+```{r}
+magnesio |> 
+  group_by(trat) |> 
+  summarise(
+    mean_com = mean(comp),
+    sd_comp = sd(comp),
+    var_comp = var(comp),
+    n = n(),
+    se_comp = sd_comp / sqrt(n - 1),
+    ci = se_comp * qt(0,025, df = 9))
+magnesio
+```
+
+### visualização em box plot
+
+```{r}
+magnesio |> 
+  ggplot(aes(trat, comp))+
+  geom_boxplot()+
+  geom_jitter(width = 0.1)
+```
+
+O conjunto de dados importado esta no formato longo, para o teste T, os dados devem estar no formato largo. Para isso, vamos usar a função *pivot_wider*.
+
+```{r}
+magnesio2 <- magnesio |> 
+  pivot_wider(1, names_from = "trat",
+              values_from = "comp")
+magnesio2
+```
+
+O teste T é um teste paramétrico que precisa seguir duas premissas, sendo estas: normalidade e homogeneidade da variância.
+
+### Normalidade
+
+```{r}
+attach(magnesio2)
+shapiro.test(Mg2)
+
+```
+
+```{r}
+shapiro.test(control)
+```
+
+A normalidade pode ser verificada de forma visual
+
+```{r}
+qqnorm(control)
+qqline(control)
+
+qqnorm(Mg2)
+qqline(Mg2)
+
+```
+
+### Homogeneidade
+
+```{r}
+attach(magnesio2)
+var.test(Mg2, control)
+#não rejeita a hipotese nula de que as variâncias são homogêneas
+```
+
+```{r}
+t.test(Mg2, control,
+       var.equal = TRUE)
+#houve efeito da suplementação de magnésio no comprimento da lesão
+```
+
+pacote report da uma sugestão de texto relatando a saída do teste T
+
+```{r}
+teste1 <- t.test(Mg2, control,
+       var.equal = TRUE)
+report(teste1)
+```
+
+### Visualização do gáfico pós teste
+
+```{r}
+magnesio |> 
+  ggplot(aes(trat, comp))+
+  geom_boxplot()+
+  geom_point()+
+  theme_bw()+
+  stat_summary(fun="mean",
+               geom = "point", 
+               size = 4, color = "blue")+
+  annotate("text", x= 2, y= 15, label = "P < 0,01")
+  
+```
+
+## Dois grupos dependentes
+
+o tent T para amostras dependentes é usado quando um mesmo elemento ou amostra é medida ao longo do tempo ou avaliada antes e depois da aplicação de determinado tratamento em diferentes métodos.
+
+```{r}
+escala <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=1729131173")
+```
+
+Primeiro passar para o formato largo
+
+```{r}
+escala1 <- escala |> 
+  dplyr::select(assessment, rater, acuracia) |> 
+  pivot_wider(1, names_from = "assessment",
+              values_from = "acuracia")
+```
+
+Visualizar
+
+```{r}
+escala |>
+  ggplot(aes(assessment, acuracia))+
+  geom_boxplot()+
+  geom_point()
+```
+
+Verificar se as premissas são atendidas
+
+Normalidade
+
+```{r}
+attach(escala1)
+shapiro.test(Unaided)
+shapiro.test(Aided1)
+# dados não seguem normalidade
+```
+
+Analise visual da normalidade
+
+```{r}
+qqnorm(Aided1)
+qqline(Aided1)
+
+
+
+qqnorm(Unaided)
+qqline(Unaided)
+
+```
+
+Homogeneidade
+
+```{r}
+attach(escala1)
+var.test(Unaided, Aided1)
+#Rejeita HO: variâncias heterogênea
+```
+
+```{r}
+t.test(escala1$Aided1, escala1$Unaided,
+       paired = TRUE,
+       var.equal = FALSE)
+```
+
+Quando o conjunto de dados não segue as premissas do teste T paramétricro, aplica-se um teste não paramétrico equivalente ao test T, nesse caso vamos usar o wilcox test.
+
+```{r}
+wilcox.test(escala1$Aided1, 
+            escala1$Unaided, 
+            paired = TRUE)
+
+```
+
+### Visualizar no gráfico
+
+```{r}
+escala |> 
+  ggplot(aes(reorder(assessment, acuracia), acuracia,
+             group = rater))+
+  geom_point(stat = "identity", size = 3, shape = 1)+
+  geom_line(size = 1, color = "gray")+
+  annotate("text",
+           x = 2.3,
+           y= 0.9,
+           label = "P < 0.001")
+```

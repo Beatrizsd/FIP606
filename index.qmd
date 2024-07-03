@@ -1,11 +1,29 @@
 ---
-title: "FIP6062"
+title: "Seja bem vindo ao meu Projeto Final!"
+about: 
+  template: jolla
+  id: about-block
+  image: "fotos.jpg"
+  image-shape: round
+  links:
+    - icon: instagram
+      text: Instagram
+      href: https://www.instagram.com/biadamascenno/
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/beatriz-damasceno-a133021b0/
+    - icon: github
+      text: Githube
+      href: https://github.com/Beatrizsd
+    - icon: envelope
+      text: Email
+      href: "mailto:beatriz.damasceno@ufv.br"
 ---
 
-This is a Quarto website.
+|                                                                                                                                                    |
+|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| Oi, sou Beatriz Damasceno, doutoranda do [Programa de Pós-Graduação em Fitopatologia](https://www.dfp.ufv.br/), da Universidade Federal de Viçosa. |
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+|                                                                                                                                                                                             |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Este site foi criado como proposta de trabalho final da disciplina Analise e visualização de dados - FIP 606, ministrada pelo professor [Emerson Del Ponte](https://github.com/emdelponte). |

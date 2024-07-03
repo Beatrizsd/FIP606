@@ -1,0 +1,3 @@
+"0",""
+"0","# o mesmo raciocinio serve para importar tabela atraves no número da sua localização na planilha."
+"0","micelial <- read_excel(""dados-diversos.xlsx"", sheet =  3)"

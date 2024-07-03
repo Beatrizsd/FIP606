@@ -7,5 +7,53 @@
   },
   "introdução.qmd": {
     "introdução.html": "e0da06ab"
+  },
+  "como instalar.qmd": {
+    "como instalar.html": "a913b28c"
+  },
+  "INSTALAR_CARREGAR.qmd": {
+    "INSTALAR_CARREGAR.html": "162fcb8b"
+  },
+  "IMPORTAR_DADOS.qmd": {
+    "IMPORTAR_DADOS.html": "40b350f5"
+  },
+  "GGPLOT.qmd": {
+    "GGPLOT.html": "94590300"
+  },
+  "BOXPLOT.qmd": {
+    "BOXPLOT.html": "58b443f2"
+  },
+  "HISTOGRAMA.qmd": {
+    "HISTOGRAMA.html": "f5f88319"
+  },
+  "DESCRITIVA.qmd": {
+    "DESCRITIVA.html": "8afb3e0c"
+  },
+  "TRANSFORMACAO.qmd": {
+    "TRANSFORMACAO.html": "a36149c4"
+  },
+  "TESTET.qmd": {
+    "TESTET.html": "4488d76d"
+  },
+  "ANOVA.qmd": {
+    "ANOVA.html": "e507115d"
+  },
+  "ANOVABLOCO.qmd": {
+    "ANOVABLOCO.html": "fc0be18d"
+  },
+  "ANOVAFATORIAL.qmd": {
+    "ANOVAFATORIAL.html": "a80c00ae"
+  },
+  "CORRELAÇÃO.qmd": {
+    "CORRELAÇÃO.html": "a8882cb5"
+  },
+  "REGRESSÃO.qmd": {
+    "REGRESSÃO.html": "76a4c1c6"
+  },
+  "MAPAS.qmd": {
+    "MAPAS.html": "2e507b15"
+  },
+  "EC50.qmd": {
+    "EC50.html": "f22eef51"
   }
 }

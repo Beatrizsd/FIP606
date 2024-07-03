@@ -1,0 +1,154 @@
+---
+title: ""
+---
+
+**ANOVA em bloco**
+
+### Pacotes usados
+```{r}
+library(dplyr)
+library(gsheet)
+library(tidyverse)
+library(performance)
+library(emmeans)
+library(multcomp)
+library(DHARMa)
+```
+
+
+
+### Importar dados
+
+```{r}
+
+soja <- gsheet2tbl("https://docs.google.com/spreadsheets/d/1bq2N19DcZdtax2fQW9OHSGMR0X2__Z9T/edit#gid=866852711")
+
+#transformar o trat e bloco em um fator
+soja <- soja |> 
+  mutate(TRAT = as.factor(TRAT),
+         BLOCO = as.factor(BLOCO))
+
+```
+
+### Visualizar
+
+```{r}
+dfc <- soja %>%
+  ggplot(aes(TRAT, DFC)) +
+  geom_jitter(width = 0.1, color = "gray60")+
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+dfc
+
+fer <- soja %>% 
+  ggplot(aes(TRAT, FER )) +
+  geom_jitter(width = 0.1, color = "gray60")+
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+fer
+
+prod <- soja %>%
+  ggplot(aes(TRAT, PROD)) +
+  geom_jitter(width = 0.1, color = "gray60")+
+  stat_summary(fun.data = "mean_cl_boot", color = "black")
+prod
+
+```
+
+### comparações multiplas entre tratamentos
+
+```{r}
+aov_dfc <- lm(DFC ~ TRAT + BLOCO, data = soja)
+anova(aov_dfc)
+#o efeito do bloco não foi significativo
+```
+
+Checar premissas
+
+```{r}
+check_normality(aov_dfc)
+check_heteroscedasticity(aov_dfc)
+```
+
+Estimando médias
+
+```{r}
+medias_dfc <- emmeans(aov_dfc, ~ TRAT)
+medias_dfc
+
+library(multcomp)
+cld(medias_dfc)
+```
+
+### ANOVA para variável resposta ferrugem
+
+```{r}
+aov_fer <- lm(FER ~ TRAT + BLOCO, data = soja)
+anova(aov_fer)
+```
+
+chegar premissas
+
+```{r}
+check_normality(aov_fer)
+check_heteroscedasticity(aov_fer)
+# Não atendeu as premissas
+```
+
+### Transformação logaritmica
+
+```{r}
+aov_fer <- lm(log(FER) ~ TRAT + BLOCO, data = soja)
+anova(aov_fer)
+
+
+check_normality(aov_fer)
+check_heteroscedasticity(aov_fer)
+
+
+
+
+medias_fer <- emmeans(aov_fer, ~ TRAT, type = "response")
+medias_fer
+pwpm(medias_fer)
+
+library(multcomp)
+cld(medias_fer, Letters = LETTERS)
+
+pwpm (medias_fer)
+
+# a transformação logaritmica não foi adequada para atender as premissas
+```
+
+### Transformação box-cox
+
+```{r}
+b <- boxcox(lm(soja$FER ~1))
+lambda<- b$x[which.max(b$y)]
+lambda
+
+soja$FER2 <- (soja$FER ^ lambda - 1) / lambda
+
+```
+
+### ANOVA para variável resposta produtividade
+
+```{r}
+#construindo função para anova
+aov_prod <- lm(log(PROD) ~ TRAT + BLOCO, data = soja)
+anova(aov_prod)
+
+# Verificar os pressupostos
+check_normality(aov_prod)
+check_heteroscedasticity(aov_prod)
+library(DHARMa)
+plot(simulateResiduals(aov_prod))
+
+
+# Comparação de médias
+medias_prod <- emmeans(aov_prod, ~ TRAT, type = "response")
+medias_prod
+pwpm(medias_prod)
+
+
+medias_prod_group <- cld(medias_prod, letters = LETTERS)
+cld(medias_prod, Letters = LETTERS)
+```

@@ -1,0 +1,5 @@
+"0","df1 |>"
+"0","  group_by(prova) |> "
+"0","  summarise(mean_nota = mean(nota))"
+"2","Erro: objeto 'df1' não encontrado
+"

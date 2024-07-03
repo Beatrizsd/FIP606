@@ -1,0 +1,4 @@
+"0","mg2 <- mg |> "
+"0","  pivot_wider(names_from = trat,"
+"0","              values_from = comp)"
+"0",""

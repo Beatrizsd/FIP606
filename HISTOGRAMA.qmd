@@ -1,0 +1,50 @@
+---
+title: "bfbf"
+---
+### Pacotes
+```{r}
+library(tidyverse)
+```
+
+**Histogramas**
+
+O histograma é usado para visualizar a distribuição de uma variável numérica. Para isso, usaremos a função geom_histogram
+
+### Importar dados
+
+```{r}
+cr <- read_csv("https://raw.githubusercontent.com/emdelponte/paper-coffee-rust-Ethiopia/master/data/survey_clean.csv")
+```
+
+Aqui observaremos um histograma da severidade por cultivar
+
+```{r}
+cr |> 
+  ggplot(aes(x = sev2))+
+  geom_histogram(bins = 10,
+                 color = "black",
+                 fill = "darkorange")+
+  facet_wrap(~ cultivar)
+
+```
+
+Histograma da incidência
+
+```{r}
+cr |> 
+  ggplot(aes(x = inc))+
+  geom_histogram(bins = 15,
+                 color  = "black",
+                 fill = "darkorange")+
+  geom_rug()+
+  geom_vline(aes(xintercept = 34.89),
+             linetype = "dashed")+
+  annotate(geom = "text",
+           x = 46,
+           y = 62,
+           label = "Meam = 34.8")
+
+# a função geom_vline foi usada para a média da dristribuição
+
+# a função geon_rug é util para para oferecer uma visão adicional da densidade dos dados 
+```

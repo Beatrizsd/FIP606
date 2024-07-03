@@ -1,0 +1,3 @@
+"0","campo2 <- campo |> "
+"0","dplyr::select(3:5)"
+"0","corgraph(campo2)"
